@@ -1,0 +1,8 @@
+{
+    "name": "DevTools",
+    "api_version": "0.0.1",
+    "main": "main.Main",
+    "version": "0.0.1",
+    "description": "Simple plugin that helps to make another one",
+    "author": "HunterAzar"
+}
