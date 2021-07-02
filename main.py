@@ -32,7 +32,7 @@ class Main:
         
     def liblary(self, short: str, *args):
         if short in self.dictionary:
-            self.info(self.dictionary[short].format(args[0]) if len(args) != 0
+            self.logger.info(self.dictionary[short].format(args[0]) if len(args) != 0
                       else self.dictionary[short])
     
     def on_load(self):
@@ -50,14 +50,14 @@ class Main:
         plugin_version = plugin_info["version"]
         if plugin_info["name"] in self.loaded_plugins:
             return 0
-        self.logger.notice(self.liblary("load_plugin").format(name))
+        self.logger.notice(self.liblary("load_plugin", name))
         if plugin_info["api_version"] != version.podrum_api_version:
-            self.logger.warn(self.liblary("wrong_api").format(name))
-            self.logger.warn(self.liblary("wrong_api2").format(plugin_version))
-            self.logger.warn(self.liblary("wrong_api3").format(version.podrum_api_version))
+            self.logger.warn(self.liblary("wrong_api", name))
+            self.logger.warn(self.liblary("wrong_api2", plugin_version))
+            self.logger.warn(self.liblary("wrong_api3", version.podrum_api_version))
             return 1
         if plugin_info["name"] in self.server.managers.plugin_manager.plugins:
-            self.logger.info(self.liblary("unload_plugin").format(name))
+            self.logger.info(self.liblary("unload_plugin", name))
             del self.server.managers.plugin_manager.plugins[plugin_info["name"]]
         spec = importlib.util.spec_from_file_location(f"{class_name}", f"{path}\{file_name}.py")
         prev_main_class = spec.loader.load_module(spec.name)
@@ -70,7 +70,7 @@ class Main:
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].author = plugin_info["author"]
         if hasattr(main_class, "on_load"):
             self.server.managers.plugin_manager.plugins[plugin_info["name"]].on_load()
-        self.logger.success(self.liblary("success_loading").format(name))
+        self.logger.success(self.liblary("success_loading", name))
         return 0
 
     def getAllFolders(self) -> None:
@@ -82,6 +82,6 @@ class Main:
                     if self.toxic_load(os.path.join(self.plugin_folder_path, dirs)) == 0:
                         howMuch = howMuch+1
         if howMuch != 0:
-            self.logger.info(self.liblary("loaded_x_plugins").format(howMuch))
+            self.logger.info(self.liblary("loaded_x_plugins", howMuch))
         else:
             self.logger.info(self.liblary("no_plugins"))
