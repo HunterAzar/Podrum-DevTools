@@ -5,6 +5,14 @@ from podrum.version import version
 from podrum.console.logger import logger
 import os
 
+# self.logger.info("Making new ZIP file")
+        # shutil.make_archive(f"{name}_{plugin_version}","zip",path)
+        # shutil.move(f"{name}_{plugin_version}.zip",f"plugins/{name}_{plugin_version}.zip")
+        # self.logger.success("Successfully maked ZIP file")
+
+        #self.server.managers.plugin_manager.load(f"{self.server.get_root_path()}\\..\\plugins\\{name}_{plugin_version}.zip")
+
+
 class Main:
     def __init__(self):
         self.plugin_folder_path: str = os.path.join(os.getcwd(), "plugins")
@@ -18,7 +26,8 @@ class Main:
             "wrong_api2": "Plugin API version {}",
             "wrong_api3": "Required API version {}",
             "loaded_x_plugins": "Loaded {} plugins",
-            "success_loading": "Successfull loaded {}"
+            "success_loading": "Successfull loaded {}",
+            "no_plugins": "There is no plugins to load"
         }
         
     def liblary(self, short: str, *args):
@@ -44,18 +53,12 @@ class Main:
         self.logger.notice(self.liblary("load_plugin").format(name))
         if plugin_info["api_version"] != version.podrum_api_version:
             self.logger.warn(self.liblary("wrong_api").format(name))
-            self.logger.warn(self.liblary("wrong_api2").format(plugin_info["api_version"]))
+            self.logger.warn(self.liblary("wrong_api2").format(plugin_version))
             self.logger.warn(self.liblary("wrong_api3").format(version.podrum_api_version))
             return 1
         if plugin_info["name"] in self.server.managers.plugin_manager.plugins:
             self.logger.info(self.liblary("unload_plugin").format(name))
             del self.server.managers.plugin_manager.plugins[plugin_info["name"]]
-        # self.logger.info("Making new ZIP file")
-        # shutil.make_archive(f"{name}_{plugin_version}","zip",path)
-        # shutil.move(f"{name}_{plugin_version}.zip",f"plugins/{name}_{plugin_version}.zip")
-        # self.logger.success("Successfully maked ZIP file")
-
-        #self.server.managers.plugin_manager.load(f"{self.server.get_root_path()}\\..\\plugins\\{name}_{plugin_version}.zip")
         spec = importlib.util.spec_from_file_location(f"{class_name}", f"{path}\{file_name}.py")
         prev_main_class = spec.loader.load_module(spec.name)
         main_class = getattr(prev_main_class,class_name)
@@ -81,4 +84,4 @@ class Main:
         if howMuch != 0:
             self.logger.info(self.liblary("loaded_x_plugins").format(howMuch))
         else:
-            self.logger.info("There is no plugins to load")
+            self.logger.info(self.liblary("no_plugins"))
