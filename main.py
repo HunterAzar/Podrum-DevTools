@@ -52,7 +52,7 @@ class Main:
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].version = plugin_info["version"]
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].description = plugin_info["description"]
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].author = plugin_info["author"]
-        if(hasattr(main_class, "on_load")):
+        if hasattr(main_class, "on_load"):
             self.server.managers.plugin_manager.plugins[plugin_info["name"]].on_load()
         self.server.logger.success(f"""Thank you server for loading {plugin_info["name"]}""")
         return 0
@@ -61,9 +61,9 @@ class Main:
         howMuch = 0
         for dirs in os.listdir(self.plugin_folder_path):
             if os.path.isdir(os.path.join(self.plugin_folder_path, dirs)):
-                if(dirs != "DevTools"):
+                if dirs != "DevTools":
                     self.server.logger.info(f"Loading {os.path.join(self.plugin_folder_path, dirs)} plugin")
-                    if(self.toxic_load(os.path.join(self.plugin_folder_path, dirs)) == 0):
+                    if self.toxic_load(os.path.join(self.plugin_folder_path, dirs)) == 0:
                         howMuch = howMuch+1
         if howMuch != 0:
             self.server.logger.info(f"Loaded {howMuch} plugins")
