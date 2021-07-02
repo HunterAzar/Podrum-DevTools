@@ -1,13 +1,9 @@
 import importlib
 import importlib.util
 import json
-import sys
-from podrum.plugin_manager import plugin_manager
 from podrum.version import version
-from podrum.server import server
 from podrum.console.logger import logger
 import os
-import shutil
 
 class Main:
     def __init__(self):
