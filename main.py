@@ -43,7 +43,7 @@ class Main:
     def on_unload(self):
         self.logger.notice(self.liblary("on_unload"))
 
-    def toxic_load(self,path:str) -> int:
+    def toxic_load(self, path: str) -> int:
         plugin_info: dict = json.load(open(os.path.join(path, "info.json"), 'r'))
         name = plugin_info["name"]
         file_name, class_name = plugin_info["main"].rsplit(".", 1)
