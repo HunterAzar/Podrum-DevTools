@@ -4,6 +4,7 @@ import json
 from podrum.version import version
 from podrum.console.logger import logger
 import os
+from commands.makeplugin import make_plugin
 
 # self.logger.info("Making new ZIP file")
         # shutil.make_archive(f"{name}_{plugin_version}","zip",path)
@@ -17,6 +18,7 @@ class Main:
     def __init__(self):
         self.plugin_folder_path: str = os.path.join(os.getcwd(), "plugins")
         self.loaded_plugins: list = []
+        self.before_msg = ""
         self.dictionary: dict = {
             "on_load": "DevTools is on fire!!!",
             "on_unload": "Goodbye my friend :)",
@@ -38,6 +40,7 @@ class Main:
     def on_load(self):
         self.logger: logger = self.server.logger
         self.logger.info(self.liblary("on_load"))
+        self.server.managers.command_manager.register(make_plugin(self.server))
         self.getAllFolders()
 
     def on_unload(self):
@@ -75,11 +78,13 @@ class Main:
         # REGISTERING PLUGIN AND INJECTING INFO #
         #########################################
         self.server.managers.plugin_manager.plugins[plugin_info["name"]] = main_class()
+        self.server.managers.plugin_manager.plugins[plugin_info["name"]].name = name
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].server = self.server
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].path = path
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].version = plugin_info["version"]
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].description = plugin_info["description"]
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].author = plugin_info["author"]
+        self.server.managers.plugin_manager.plugins[plugin_info["name"]].devtools = "true"
         if hasattr(main_class, "on_load"):
             self.server.managers.plugin_manager.plugins[plugin_info["name"]].on_load()
         self.logger.success(self.liblary("success_loading", name))
