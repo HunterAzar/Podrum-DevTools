@@ -18,7 +18,7 @@ class Main:
     def __init__(self):
         self.plugin_folder_path: str = os.path.join(os.getcwd(), "plugins")
         self.loaded_plugins: list = []
-        self.before_msg = ""
+        self.before_msg = "[  ]"
         self.dictionary: dict = {
             "on_load": "DevTools is on fire!!!",
             "on_unload": "Goodbye my friend :)",
