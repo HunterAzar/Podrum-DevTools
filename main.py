@@ -51,17 +51,29 @@ class Main:
         if plugin_info["name"] in self.loaded_plugins:
             return 0
         self.logger.notice(self.liblary("load_plugin", name))
+        #########        Section       #########
+        # CHECKING DECLARED PLUGIN API VERSION #
+        ########################################
         if plugin_info["api_version"] != version.podrum_api_version:
             self.logger.warn(self.liblary("wrong_api", name))
             self.logger.warn(self.liblary("wrong_api2", plugin_version))
             self.logger.warn(self.liblary("wrong_api3", version.podrum_api_version))
             return 1
+        #########        Section       #########
+        # CHECKING IF PLUGIN IS ALREADY LOADED #
+        ########################################
         if plugin_info["name"] in self.server.managers.plugin_manager.plugins:
             self.logger.info(self.liblary("unload_plugin", name))
             del self.server.managers.plugin_manager.plugins[plugin_info["name"]]
+        #########      Section     #########
+        #IMPORTING MAIN CLASS FROM PLUGIN  #
+        ####################################
         spec = importlib.util.spec_from_file_location(f"{class_name}", f"{path}\{file_name}.py")
         prev_main_class = spec.loader.load_module(spec.name)
         main_class = getattr(prev_main_class,class_name)
+        #########        Section        #########
+        # REGISTERING PLUGIN AND INJECTING INFO #
+        #########################################
         self.server.managers.plugin_manager.plugins[plugin_info["name"]] = main_class()
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].server = self.server
         self.server.managers.plugin_manager.plugins[plugin_info["name"]].path = path
