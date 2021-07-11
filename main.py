@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from podrum.server import server
     from podrum.plugin_manager import plugin_manager
-    from podrum.world.world import world
 
 
 class Main:
@@ -35,26 +34,27 @@ class Main:
         }
         self.server: 'server'
         self.plugin_manager: 'plugin_manager'
-        
+
     def on_reload(self) -> None:
         self.liblary("start_fake_reload")
         for plugin in self.loaded_plugins.copy():
             try:
-                if plugin == "!DevTools": continue
+                if plugin == "!DevTools":
+                    continue
                 if hasattr(self.plugin_manager.plugins[plugin], "on_unload"):
                     self.plugin_manager.plugins[plugin].on_unload()
-                
+
                 del self.plugin_manager.plugins[plugin]
-                self.liblary("unload_plugin",plugin)
+                self.liblary("unload_plugin", plugin)
             except:
                 self.liblary("dict_fake_reload")
         self.liblary("success_fake_reload")
-        
+
     def liblary(self, short: str, *args) -> None:
         if short in self.dictionary:
             self.logger.info(self.before_msg + (self.dictionary[short].format(args[0]) if len(args) != 0
-                      else self.dictionary[short]))
-    
+                                                else self.dictionary[short]))
+
     def make_me_first(self) -> None:
         old_plugin_list: dict = self.plugin_manager.plugins
         new_plugin_list: dict = self.loaded_plugins
@@ -63,7 +63,7 @@ class Main:
                 continue
             self.logger.info(plugin)
             new_plugin_list[old_plugin_list[plugin].name] = old_plugin_list[plugin]
-        self.plugin_manager.plugins = new_plugin_list 
+        self.plugin_manager.plugins = new_plugin_list
 
     def on_load(self) -> None:
         self.loaded_plugins["!DevTools"] = self
@@ -78,7 +78,8 @@ class Main:
         self.logger.notice(self.liblary("on_unload"))
 
     def toxic_load(self, path: str) -> int:
-        plugin_info: dict = json.load(open(os.path.join(path, "info.json"), 'r'))
+        plugin_info: dict = json.load(
+            open(os.path.join(path, "info.json"), 'r'))
         name = plugin_info["name"]
         file_name, class_name = plugin_info["main"].rsplit(".", 1)
         plugin_version = plugin_info["version"]
@@ -91,7 +92,8 @@ class Main:
         if plugin_info["api_version"] != version.podrum_api_version:
             self.logger.warn(self.liblary("wrong_api", name))
             self.logger.warn(self.liblary("wrong_api2", plugin_version))
-            self.logger.warn(self.liblary("wrong_api3", version.podrum_api_version))
+            self.logger.warn(self.liblary(
+                "wrong_api3", version.podrum_api_version))
             return 1
         #########        Section       #########
         # CHECKING IF PLUGIN IS ALREADY LOADED #
@@ -102,9 +104,10 @@ class Main:
         #########      Section     #########
         #IMPORTING MAIN CLASS FROM PLUGIN  #
         ####################################
-        spec = importlib.util.spec_from_file_location(f"{class_name}", f"{path}\{file_name}.py")
+        spec = importlib.util.spec_from_file_location(
+            f"{class_name}", f"{path}\{file_name}.py")
         prev_main_class = spec.loader.load_module(spec.name)
-        main_class = getattr(prev_main_class,class_name)
+        main_class = getattr(prev_main_class, class_name)
         #########        Section        #########
         # REGISTERING PLUGIN AND INJECTING INFO #
         #########################################
@@ -127,7 +130,8 @@ class Main:
         for dirs in os.listdir(self.plugin_folder_path):
             if os.path.isdir(os.path.join(self.plugin_folder_path, dirs)):
                 if dirs != "DevTools":
-                    self.logger.info(f"Loading {os.path.join(self.plugin_folder_path, dirs)} plugin")
+                    self.logger.info(
+                        f"Loading {os.path.join(self.plugin_folder_path, dirs)} plugin")
                     if self.toxic_load(os.path.join(self.plugin_folder_path, dirs)) == 0:
                         howMuch = howMuch+1
         if howMuch != 0:
