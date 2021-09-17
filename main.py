@@ -95,22 +95,13 @@ class Main:
             self.logger.warn(self.liblary(
                 "wrong_api3", version.podrum_api_version))
             return 1
-        #########        Section       #########
-        # CHECKING IF PLUGIN IS ALREADY LOADED #
-        ########################################
         if name in self.plugin_manager.plugins:
             self.logger.info(self.liblary("unload_plugin", name))
             del self.plugin_manager.plugins[name]
-        #########      Section     #########
-        #IMPORTING MAIN CLASS FROM PLUGIN  #
-        ####################################
         spec = importlib.util.spec_from_file_location(
             f"{class_name}", f"{path}\{file_name}.py")
         prev_main_class = spec.loader.load_module(spec.name)
         main_class = getattr(prev_main_class, class_name)
-        #########        Section        #########
-        # REGISTERING PLUGIN AND INJECTING INFO #
-        #########################################
         self.plugin_manager.plugins[name] = main_class()
         self.plugin_manager.plugins[name].name = name
         self.plugin_manager.plugins[name].server = self.server
