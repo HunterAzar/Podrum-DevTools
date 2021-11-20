@@ -1,7 +1,7 @@
 {
     "name": "DevTools",
     "api_version": "0.0.1",
-    "main": "main.Main",
+    "main": "devtools.Tool",
     "version": "0.1.0",
     "description": "Very static plugin that helps you manage your plugins",
     "author": "HunterAzar"
